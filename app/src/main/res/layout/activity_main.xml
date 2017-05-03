@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#fffc970b"
-    tools:context="com.artxak.stormy.MainActivity"
+    tools:context="com.artxak.stormy.ui.MainActivity"
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="81dp">
 

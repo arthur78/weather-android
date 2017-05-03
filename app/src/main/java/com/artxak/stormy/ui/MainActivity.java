@@ -1,8 +1,6 @@
-package com.artxak.stormy;
+package com.artxak.stormy.ui;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -14,6 +12,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.artxak.stormy.R;
+import com.artxak.stormy.weather.Current;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -31,7 +32,7 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
 
     private static final String Tag = MainActivity.class.getSimpleName();
-    private CurrentWeather mCurrentWeather;
+    private Current mCurrent;
 
     //    private TextView mTemperatureLabel;
     @BindView(R.id.timeLabel) TextView mTimeLabel;
@@ -104,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
                         String jsonData = response.body().string();
                         Log.v(Tag, jsonData);
                         if (response.isSuccessful()) {
-                            mCurrentWeather = getCurrentDetails(jsonData);
+                            mCurrent = getCurrentDetails(jsonData);
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
@@ -136,32 +137,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateDisplay() {
-        mTimeLabel.setText("At " + mCurrentWeather.getFormattedTime() + " it will be");
-        mTemperatureLabel.setText(String.valueOf(mCurrentWeather.getTemperature()));
-        mHumidityLabel.setText(String.format("%s", mCurrentWeather.getHumidity()));
-        mPrecipLabel.setText(String.format("%s%%", mCurrentWeather.getPrecipChance()));
-        mSummaryLabel.setText(mCurrentWeather.getSummary());
+        mTimeLabel.setText("At " + mCurrent.getFormattedTime() + " it will be");
+        mTemperatureLabel.setText(String.valueOf(mCurrent.getTemperature()));
+        mHumidityLabel.setText(String.format("%s", mCurrent.getHumidity()));
+        mPrecipLabel.setText(String.format("%s%%", mCurrent.getPrecipChance()));
+        mSummaryLabel.setText(mCurrent.getSummary());
 
-        Drawable drawable = getResources().getDrawable(mCurrentWeather.getIconId());
+        Drawable drawable = getResources().getDrawable(mCurrent.getIconId());
         mIconImageView.setImageDrawable(drawable);
     }
 
-    private CurrentWeather getCurrentDetails(String jsonData) throws JSONException {
+    private Current getCurrentDetails(String jsonData) throws JSONException {
         JSONObject forecast = new JSONObject(jsonData);
         JSONObject currently = forecast.getJSONObject("currently");
 
-        CurrentWeather currentWeather = new CurrentWeather();
-        currentWeather.setIcon(currently.getString("icon"));
-        currentWeather.setTime(currently.getLong("time"));
-        currentWeather.setTemperature(currently.getDouble("temperature"));
-        currentWeather.setHumidity(currently.getDouble("humidity"));
-        currentWeather.setPrecipChance(currently.getDouble("precipProbability"));
-        currentWeather.setSummary(currently.getString("summary"));
-        currentWeather.setTimeZone(forecast.getString("timezone"));
+        Current current = new Current();
+        current.setIcon(currently.getString("icon"));
+        current.setTime(currently.getLong("time"));
+        current.setTemperature(currently.getDouble("temperature"));
+        current.setHumidity(currently.getDouble("humidity"));
+        current.setPrecipChance(currently.getDouble("precipProbability"));
+        current.setSummary(currently.getString("summary"));
+        current.setTimeZone(forecast.getString("timezone"));
 
-        Log.d(Tag, currentWeather.getFormattedTime());
+        Log.d(Tag, current.getFormattedTime());
 
-        return currentWeather;
+        return current;
     }
 
     private boolean isNetworkAvailable() {
